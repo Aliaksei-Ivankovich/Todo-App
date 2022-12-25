@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { formatDistanceToNow } from 'date-fns';
 
-import Task from '../Task/Task';
+import Task from '../Task/Task'; 
 
 import './TaskList.css';
 
