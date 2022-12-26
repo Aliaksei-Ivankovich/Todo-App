@@ -18,10 +18,13 @@ class NewTaskForm extends Component {
   };
 
   onValueSubmit = (e) => {
+    const {value} = this.state
+    const {onItemAdd} = this.props
+    
     e.preventDefault();
     if (this.state.value !== '') {
-      this.props.onItemAdd(this.state.value);
-      this.setState(() => ({ value: '' }));
+      onItemAdd(value);
+      this.setState({ value: '' });
     }
   };
 

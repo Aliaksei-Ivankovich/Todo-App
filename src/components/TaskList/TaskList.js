@@ -1,31 +1,39 @@
 import PropTypes from 'prop-types';
 import { formatDistanceToNow } from 'date-fns';
+import { parseISO } from 'date-fns';
 
-import Task from '../Task/Task'; 
+import Task from '../Task/Task';
 
 import './TaskList.css';
+
 
 function TaskList(props) {
   const { data, onDeleteTasck, onEditItem, onTaskDone } = props;
 
-  const elements = data.map((item) => {
-    const { id, createTime, ...itemProps } = item;
-    const time = `created ${formatDistanceToNow(createTime, { includeSeconds: true })} ago`;
+  const elements = () => {
+    if(data.length !== 0) {
+      return   data.map((item) => {
+        const { id, createTime, ...itemProps } = item;
+        const time = `created ${formatDistanceToNow(parseISO(createTime), { includeSeconds: true })} ago`;
+    
+        return (
+          <Task
+            {...itemProps}
+            key={id}
+            onDeleteTasck={() => onDeleteTasck(id)}
+            onEditItem={onEditItem}
+            id={id}
+            onTaskDone={() => onTaskDone(id)}
+            createTime={time}
+          />
+        );
+      });
+    }
+    return <span className="todo-list__empty">No tasks to do added</span>
+  }
 
-    return (
-      <Task
-        {...itemProps}
-        key={id}
-        onDeleteTasck={() => onDeleteTasck(id)}
-        onEditItem={onEditItem}
-        id={id}
-        onTaskDone={() => onTaskDone(id)}
-        createTime={time}
-      />
-    );
-  });
 
-  return <ul className="todo-list">{elements}</ul>;
+  return <ul className="todo-list">{elements()}</ul>;
 }
 
 TaskList.defaultProps = {

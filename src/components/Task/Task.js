@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import cl from 'classnames';
 
 import './Task.css';
 
@@ -12,13 +13,9 @@ class Task extends Component {
   }
 
   onToggleEdit = () => {
-    if (!this.props.completed) {
-      this.setState(({ editing }) => ({
-        editing: !editing,
-      }));
-    } else {
-      console.log('Task Completed!');
-    }
+    this.setState(({ editing }) => ({
+      editing: !editing,
+    }));
   };
 
   onEditValue = (e) => {
@@ -37,13 +34,15 @@ class Task extends Component {
     const { onDeleteTasck, onTaskDone, createTime, completed } = this.props;
     const { description, editing } = this.state;
 
-    let itemClass = 'todo-item';
-
-    if (completed) itemClass += ' todo-item_completed';
-    if (editing) itemClass += ' todo-item_editing';
+    const clazz = cl(
+      'todo-item', {
+        ' todo-item_completed': completed,
+        ' todo-item_editing': editing
+    });
+ 
 
     return (
-      <li className={itemClass}>
+      <li className={clazz}>
         <div className="todo-item__view">
           <input className="todo-item__toggle" type="checkbox" onChange={onTaskDone} checked={completed} />
           <label className="todo-item__toggle-lable">

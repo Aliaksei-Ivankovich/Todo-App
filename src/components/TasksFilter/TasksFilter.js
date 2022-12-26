@@ -3,9 +3,9 @@ import './TasksFilter.css';
 function TasksFilter(props) {
   const { filter, onFilterData } = props;
   const btnsArr = [
-    { name: 'all', lable: 'All' },
-    { name: 'active', lable: 'Active' },
-    { name: 'completed', lable: 'Completed' },
+    { name: 'ALL', lable: 'All' },
+    { name: 'ACTIVE', lable: 'Active' },
+    { name: 'COMPLETED', lable: 'Completed' },
   ];
 
   const btnsList = btnsArr.map(({ name, lable }) => {

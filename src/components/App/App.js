@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import NewTaskForm from '../NewTaskForm/NewTaskForm';
 import TaskList from '../TaskList/TaskList';
@@ -8,19 +9,32 @@ import './App.css';
 
 class App extends Component {
   constructor(props) {
-    super(props);
+    super(props); 
     this.state = {
-      data: [
-        { id: 1, description: 'First task', createTime: new Date(2022, 12, 12), completed: false },
-        { id: 2, description: 'Second task', createTime: new Date(2021, 12, 12), completed: false },
-        { id: 3, description: 'One more task', createTime: new Date(2020, 12, 12), completed: false },
-        { id: 4, description: 'Completed task', createTime: new Date(2019, 12, 12), completed: true },
-      ],
-
-      filter: 'all',
+      data: [],
+      filter: ''
     };
+    this.filters = {
+      ALL: 'ALL',
+      ACTIVE: 'ACTIVE',
+      COMPLETED: 'COMPLETED'
+    };
+  }
+  
 
-    this.maxId = 5;
+  componentDidMount() {
+    const localData = localStorage.getItem('data');
+    const filter = this.filters.ALL
+    
+    if(localData) {
+      const data = JSON.parse(localData)
+      this.setState({data: data})
+    }
+    this.setState({filter})
+  }
+
+  componentDidUpdate() {
+    localStorage.setItem('data', JSON.stringify(this.state.data));
   }
 
   onTaskDone = (id) => {
@@ -36,14 +50,13 @@ class App extends Component {
   onAddItem = (value) => {
     this.setState(({ data }) => {
       const newTask = {
-        id: this.maxId,
+        id: uuidv4(),
         description: value,
-        createTime: new Date(),
+        createTime: new Date().toISOString(),
         completed: false,
       };
       return { data: [...data, newTask] };
     });
-    ++this.maxId;
   };
 
   onCleareCompleted = () => {
@@ -57,12 +70,14 @@ class App extends Component {
   };
 
   updateData = (data, filter) => {
+    const {ALL, ACTIVE, COMPLETED} = this.filters
+
     switch (filter) {
-      case 'all':
+      case ALL:
         return data;
-      case 'active':
+      case ACTIVE:
         return data.filter((item) => item.completed === false);
-      case 'completed':
+      case COMPLETED:
         return data.filter((item) => item.completed === true);
       default:
         return data;
