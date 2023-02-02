@@ -8,6 +8,8 @@ class Task extends Component {
     super(props);
     this.state = {
       description: this.props.description,
+      minValue: '',
+      secValue: '',
       editing: false,
     };
   }
@@ -32,7 +34,7 @@ class Task extends Component {
 
   render() {
     const { onDeleteTasck, onTaskDone, createTime, completed } = this.props;
-    const { description, editing } = this.state;
+    const { description, editing, minValue, secValue } = this.state;
 
     const clazz = cl(
       'todo-item', {
@@ -47,6 +49,11 @@ class Task extends Component {
           <input className="todo-item__toggle" type="checkbox" onChange={onTaskDone} checked={completed} />
           <label className="todo-item__toggle-lable">
             <span className="todo-item__description">{description}</span>
+            <span className='timer__wrapper'>
+              <button className="todo-item__icon icon-play"></button>
+              <button className="todo-item__icon icon-pause"></button>
+              {minValue}:{secValue}
+            </span>
             <span className="todo-item__created">{createTime}</span>
           </label>
           <button className="todo-item__icon todo-item__icon-edit" onClick={this.onToggleEdit}></button>

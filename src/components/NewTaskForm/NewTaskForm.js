@@ -7,39 +7,61 @@ class NewTaskForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: '',
+      taskValue: '',
+      minValue: '',
+      secValue: ''
     };
   }
 
   onValueChange = (e) => {
     this.setState({
-      value: e.target.value,
+      [e.target.name]: e.target.value
     });
   };
 
   onValueSubmit = (e) => {
-    const {value} = this.state
+    console.log(e)
+    const {taskValue} = this.state
     const {onItemAdd} = this.props
     
     e.preventDefault();
     if (this.state.value !== '') {
-      onItemAdd(value);
-      this.setState({ value: '' });
+      onItemAdd(taskValue);
+      this.setState({ 
+        taskValue: '',
+        minValue: '',
+        secValue: ''
+     });
     }
   };
 
   render() {
-    const { value } = this.state;
+    const { taskValue, minValue, secValue} = this.state;
 
     return (
-      <form onSubmit={this.onValueSubmit}>
+      <form className="new-todo-form" onSubmit={this.onValueSubmit}>
         <input
           className="new-todo"
-          placeholder="What needs to be done?"
+          placeholder="Task"
           autoFocus
-          value={value}
+          name="taskValue"
+          value={taskValue}
           onChange={this.onValueChange}
         />
+        <input 
+          className="new-todo new-todo_timer" 
+          placeholder="Min" 
+          autoFocus
+          name='minValue'
+          value={minValue}
+          onChange={this.onValueChange}/>
+        <input 
+          className="new-todo new-todo_timer" 
+          placeholder="Sec" 
+          autoFocus
+          name='secValue'
+          value={secValue}
+          onChange={this.onValueChange}/>
       </form>
     );
   }

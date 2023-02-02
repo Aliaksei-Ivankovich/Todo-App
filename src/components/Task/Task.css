@@ -136,3 +136,34 @@
 .todo-item .edit {
   display: none;
 }
+
+.timer__wrapper {
+  position: relative;
+  padding-left: 50px;
+  display: flex;
+  font-size: 13px;
+	color: gray;
+}
+
+.icon-pause, .icon-play {
+  top: -11px;
+  left: 20px;
+  width: 30px;
+  height: 40px;
+  font-size: 18px;
+  margin: 0 auto;
+
+}
+
+.icon-play {
+	font-size: 18px;
+  left: 0px;
+}
+
+.icon-pause:after {
+	content: '⏸';
+}
+
+.icon-play:after {
+	content: '▶';
+}
