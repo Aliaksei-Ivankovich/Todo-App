@@ -33,3 +33,9 @@
   padding: 16px 16px 16px 16px;
 }
 
+.new-todo__button {
+  width: 0;
+  height: 0;
+  display: none;
+}
+

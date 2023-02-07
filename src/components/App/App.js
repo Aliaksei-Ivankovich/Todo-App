@@ -47,13 +47,14 @@ class App extends Component {
     this.setState(({ data }) => ({ data: data.filter((item) => item.id !== id) }));
   };
 
-  onAddItem = (value) => {
+  onAddItem = (description, taskTime) => {
     this.setState(({ data }) => {
       const newTask = {
         id: uuidv4(),
-        description: value,
+        description,
         createTime: new Date().toISOString(),
         completed: false,
+        taskTime
       };
       return { data: [...data, newTask] };
     });
@@ -66,6 +67,12 @@ class App extends Component {
   onEditItem = (id, value) => {
     this.setState(({ data }) => ({
       data: data.map((item) => (item.id === id ? { ...item, description: value } : { ...item })),
+    }));
+  };
+
+  onTimer = (id, taskTime) => {
+    this.setState(({ data }) => ({
+      data: data.map((item) => (item.id === id ? { ...item, taskTime } : { ...item })),
     }));
   };
 
@@ -106,6 +113,7 @@ class App extends Component {
             onDeleteTasck={this.onDeleteItem}
             onEditItem={this.onEditItem}
             onTaskDone={this.onTaskDone}
+            onTimer={this.onTimer}
           />
           <Footer
             activeTasks={activeTasks}

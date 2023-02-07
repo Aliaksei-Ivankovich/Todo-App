@@ -1,6 +1,8 @@
 import { Component } from 'react';
 import cl from 'classnames';
 
+import Timer from '../Timer/Timer';
+
 import './Task.css';
 
 class Task extends Component {
@@ -8,10 +10,26 @@ class Task extends Component {
     super(props);
     this.state = {
       description: this.props.description,
-      minValue: '',
-      secValue: '',
+      isTimerOn: false,
       editing: false,
     };
+  }
+
+  stopTimer = (leftTime) => {
+    const { id, onTimer } = this.props
+    onTimer(id, leftTime)
+  }
+
+  onTimerPlay = () => {
+    this.setState({
+      isTimerOn: true
+    })
+  }
+
+  onTimerStop = () => {
+    this.setState({
+      isTimerOn: false
+    })
   }
 
   onToggleEdit = () => {
@@ -27,14 +45,17 @@ class Task extends Component {
   };
 
   onSubmitTask = (e) => {
+    const { description } = this.state
+    const { id, onEditItem } = this.props
+
     e.preventDefault();
-    this.props.onEditItem(this.props.id, this.state.description);
+    onEditItem(id, description);
     this.onToggleEdit();
   };
 
   render() {
-    const { onDeleteTasck, onTaskDone, createTime, completed } = this.props;
-    const { description, editing, minValue, secValue } = this.state;
+    const { onDeleteTasck, onTaskDone, createTime, completed, taskTime } = this.props;
+    const { description, editing, isTimerOn} = this.state;
 
     const clazz = cl(
       'todo-item', {
@@ -46,21 +67,41 @@ class Task extends Component {
     return (
       <li className={clazz}>
         <div className="todo-item__view">
-          <input className="todo-item__toggle" type="checkbox" onChange={onTaskDone} checked={completed} />
+          <input className="todo-item__toggle" 
+                type="checkbox" 
+                onChange={onTaskDone} 
+                checked={completed} />
           <label className="todo-item__toggle-lable">
-            <span className="todo-item__description">{description}</span>
+            <span className="todo-item__description">
+              {description}
+            </span>
             <span className='timer__wrapper'>
-              <button className="todo-item__icon icon-play"></button>
-              <button className="todo-item__icon icon-pause"></button>
-              {minValue}:{secValue}
+              <button className="todo-item__icon icon-play" 
+                      onClick={this.onTimerPlay}
+                      disabled={isTimerOn}>
+              </button>
+              <button className="todo-item__icon icon-pause"
+                      onClick={this.onTimerStop}
+                      disabled={!isTimerOn}>
+              </button>
+              <Timer taskTime={taskTime}
+                      isTimerOn={isTimerOn}
+                      stopTimer={this.stopTimer}/>
             </span>
             <span className="todo-item__created">{createTime}</span>
           </label>
-          <button className="todo-item__icon todo-item__icon-edit" onClick={this.onToggleEdit}></button>
-          <button className="todo-item__icon todo-item__icon-destroy" onClick={onDeleteTasck}></button>
+          <button className="todo-item__icon todo-item__icon-edit" 
+                  onClick={this.onToggleEdit}>
+          </button>
+          <button className="todo-item__icon todo-item__icon-destroy" 
+                  onClick={onDeleteTasck}>
+          </button>
         </div>
         <form onSubmit={this.onSubmitTask}>
-          <input type="text" className="todo-item__edit" value={description} onChange={this.onEditValue} />
+          <input type="text" 
+                className="todo-item__edit" 
+                value={description} 
+                onChange={this.onEditValue} />
         </form>
       </li>
     );

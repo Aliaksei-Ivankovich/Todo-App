@@ -116,6 +116,11 @@
   color: #af5b5e;
 }
 
+.todo-item__icon:disabled.icon-play:after {
+  cursor: default;
+  color: grey;
+}
+
 .todo-item__icon-destroy {
   right: 10px;
 }

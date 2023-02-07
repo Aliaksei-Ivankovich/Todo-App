@@ -8,7 +8,7 @@ import './TaskList.css';
 
 
 function TaskList(props) {
-  const { data, onDeleteTasck, onEditItem, onTaskDone } = props;
+  const { data, onDeleteTasck, onEditItem, onTaskDone, onTimer } = props;
 
   const elements = () => {
     if(data.length !== 0) {
@@ -24,6 +24,7 @@ function TaskList(props) {
             onEditItem={onEditItem}
             id={id}
             onTaskDone={() => onTaskDone(id)}
+            onTimer={onTimer}
             createTime={time}
           />
         );
