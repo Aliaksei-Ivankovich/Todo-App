@@ -1,0 +1,47 @@
+.timer__icon {
+    position: absolute;
+    top: 0;
+    bottom: -3px;
+    width: 30px;
+    height: 40px;
+    font-size: 34px;
+    background-color: transparent;
+    border: none;
+    outline-color: rgba(175, 47, 47, 0.15);
+    color: #cc9a9a;
+    margin: auto 0 11px;
+    transition: color 0.2s ease-out;
+    cursor: pointer;
+}
+  
+.timer__icon:hover {
+    color: #af5b5e; 
+}
+  
+.timer__icon:disabled.icon-play:after {
+    cursor: default;
+    color: grey;
+}
+
+.icon-pause, .icon-play {
+    top: -11px;
+    left: 20px;
+    width: 30px;
+    height: 40px;
+    font-size: 18px;
+    margin: 0 auto;
+
+}
+  
+.icon-play {
+    font-size: 18px;
+    left: 0px;  
+}
+
+.icon-pause:after {
+    content: '⏸';
+}
+
+.icon-play:after {
+    content: '▶';
+}

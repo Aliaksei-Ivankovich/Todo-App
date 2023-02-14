@@ -1,80 +1,72 @@
-import { Component } from "react";
+import { useState, useEffect } from "react";
 
-class Timer  extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            leftTime: this.props.taskTime
-        }
-    }
+import './Timer.css';
 
-    componentDidMount() {
-        const { isTimerOn } = this.props
+const Timer = ({ taskTime, stopTimer }) => {
+
+    const [leftTime, setLeftTile] = useState(taskTime)
+    const [timerId, setTimerId] = useState()
+    const [isTimerOn, setIsTimerOn] = useState(false)
+
+    useEffect(() => {
 
         if (isTimerOn) {
-            this.updateTimer()
+            setTimerId(setInterval(updateTimer, 1000))
         }
+        if (!isTimerOn && timerId) {
+            clearInterval(timerId)
+            stopTimer(leftTime)
+        }
+        return () => {
+            clearInterval(timerId)
+        }
+    }, [isTimerOn])
+
+    useEffect(() => {
+        if (leftTime === 0 && timerId) {
+            clearInterval(timerId)
+            stopTimer(leftTime)
+        }
+    }, [leftTime])
+
+    const updateTimer = () => {
+        setLeftTile((leftTime) => (
+            leftTime = leftTime - 1
+        ))
     }
 
-    componentDidUpdate(prevProps) {
-        const { isTimerOn } = this.props
-
-        if (isTimerOn && !prevProps.isTimerOn) {
-          this.updateTimer()
-        }
-        if (!isTimerOn && prevProps.isTimerOn) {
-          this.stopUpdateTimer()
-        }
+    const onTimerPlay = () => {
+        setIsTimerOn(true)
     }
 
-    componentWillUnmount() {
-        const { isTimerOn } = this.props
-    
-        if (isTimerOn) {
-          this.stopUpdateTimer()
-        }
+    const onTimerStop = () => {
+        setIsTimerOn(false)
     }
 
-    updateTimer = () => {
-        const { leftTime } = this.state
-
-        if (leftTime > 0) {
-            this.update = setInterval(() => {
-                this.setState(({leftTime}) => ({
-                    leftTime: leftTime - 1
-                }))
-            }, 1000);
-        }
-        if ( leftTime === 0) {
-            clearInterval(this.update)
-        }
-    }
-
-    stopUpdateTimer = () => {
-        const { stopTimer } = this.props
-        const { leftTime }  = this.state
-
-        clearInterval(this.update)
-        stopTimer(leftTime)
-    }
-
-    getTime = (leftTime) => {
+    const getTime = (leftTime) => {
         const min = Math.floor(leftTime / 60).toString().padStart(2, "0")
         const sec = Math.floor(leftTime % 60).toString().padStart(2, "0")
         return {min, sec}
     }
     
-    render() {
-        const { leftTime } = this.state
-        const time = this.getTime(leftTime)
+    const time = getTime(leftTime)
 
-        return (
+    return (
+        <>
+            <button className="timer__icon icon-play" 
+                    onClick={onTimerPlay}
+                    disabled={isTimerOn}>
+            </button>
+            <button className="timer__icon icon-pause"
+                    onClick={onTimerStop}
+                    disabled={!isTimerOn}>
+            </button>
             <span>
-              {time.min}:{time.sec}
+                {time.min}:{time.sec}
             </span>
-          )
-    }
+        </>
 
+    )
 }
 
 export default Timer;

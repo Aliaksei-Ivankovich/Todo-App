@@ -4,7 +4,7 @@ import TasksFilter from '../TasksFilter/TasksFilter';
 
 import './Footer.css';
 
-function Footer(props) {
+const Footer = (props) => {
   const { activeTasks, onCleareCompleted, onFilterData, filter } = props;
 
   return (
@@ -15,7 +15,7 @@ function Footer(props) {
         Clear completed
       </button>
     </footer>
-  );
+  )
 }
 
 Footer.defaultProps = {
@@ -23,13 +23,13 @@ Footer.defaultProps = {
   onCleareCompleted: () => {},
   onFilterData: () => {},
   filter: 'all',
-};
+}
 
 Footer.propTypes = {
   activeTasks: PropTypes.number,
   onCleareCompleted: PropTypes.func,
   onFilterData: PropTypes.func,
   filter: PropTypes.string,
-};
+}
 
 export default Footer;

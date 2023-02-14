@@ -7,7 +7,7 @@ import Task from '../Task/Task';
 import './TaskList.css';
 
 
-function TaskList(props) {
+const TaskList = (props) => {
   const { data, onDeleteTasck, onEditItem, onTaskDone, onTimer } = props;
 
   const elements = () => {

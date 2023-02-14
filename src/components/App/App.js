@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import NewTaskForm from '../NewTaskForm/NewTaskForm';
@@ -7,77 +7,69 @@ import Footer from '../Footer/Footer';
 
 import './App.css';
 
-class App extends Component {
-  constructor(props) {
-    super(props); 
-    this.state = {
-      data: [],
-      filter: ''
-    };
-    this.filters = {
-      ALL: 'ALL',
-      ACTIVE: 'ACTIVE',
-      COMPLETED: 'COMPLETED'
-    };
+const App = () => {
+
+  const [data, setData] = useState([])
+  const [filter, setFilter] = useState('')
+  const [loadingLocalData, setLoadingLocalData] = useState(true)
+
+  const filters = {
+    ALL: 'ALL',
+    ACTIVE: 'ACTIVE',
+    COMPLETED: 'COMPLETED'
   }
   
-
-  componentDidMount() {
-    const localData = localStorage.getItem('data');
-    const filter = this.filters.ALL
+  useEffect(() => {
+    const localData = localStorage.getItem('data')
     
     if(localData) {
-      const data = JSON.parse(localData)
-      this.setState({data: data})
+      setData(JSON.parse(localData))
     }
-    this.setState({filter})
+    setLoadingLocalData(false)
+    setFilter(filters.ALL)
+  }, [])
+
+  useEffect(() => {
+    if (!loadingLocalData) {
+      localStorage.setItem('data', JSON.stringify(data))
+    }
+  }, [data])
+
+  const onTaskDone = (id) => {
+    setData(data => 
+      data.map((item) => (item.id === id ? { ...item, completed: !item.completed } : { ...item }))
+    )
   }
 
-  componentDidUpdate() {
-    localStorage.setItem('data', JSON.stringify(this.state.data));
+  const onDeleteItem = (id) => {
+    setData(data => data.filter((item) => item.id !== id))
   }
 
-  onTaskDone = (id) => {
-    this.setState(({ data }) => ({
-      data: data.map((item) => (item.id === id ? { ...item, completed: !item.completed } : { ...item })),
-    }));
-  };
+  const onAddItem = (description, taskTime) => {
+    const newTask = {
+      id: uuidv4(),
+      description,
+      createTime: new Date().toISOString(),
+      completed: false,
+      taskTime
+    }
+    setData(data => [...data, newTask])
+  }
 
-  onDeleteItem = (id) => {
-    this.setState(({ data }) => ({ data: data.filter((item) => item.id !== id) }));
-  };
+  const onCleareCompleted = () => {
+    setData(data => data.filter((item) => item.completed === false))
+  }
 
-  onAddItem = (description, taskTime) => {
-    this.setState(({ data }) => {
-      const newTask = {
-        id: uuidv4(),
-        description,
-        createTime: new Date().toISOString(),
-        completed: false,
-        taskTime
-      };
-      return { data: [...data, newTask] };
-    });
-  };
+  const onEditItem = (id, value) => {
+    setData(data => data.map((item) => (item.id === id ? { ...item, description: value } : { ...item })))
+  }
 
-  onCleareCompleted = () => {
-    this.setState(({ data }) => ({ data: data.filter((item) => item.completed === false) }));
-  };
+  const onTimer = (id, taskTime) => {
+    setData(data => data.map((item) => (item.id === id ? { ...item, taskTime } : { ...item })))
+  }
 
-  onEditItem = (id, value) => {
-    this.setState(({ data }) => ({
-      data: data.map((item) => (item.id === id ? { ...item, description: value } : { ...item })),
-    }));
-  };
-
-  onTimer = (id, taskTime) => {
-    this.setState(({ data }) => ({
-      data: data.map((item) => (item.id === id ? { ...item, taskTime } : { ...item })),
-    }));
-  };
-
-  updateData = (data, filter) => {
-    const {ALL, ACTIVE, COMPLETED} = this.filters
+  const updateData = (data, filter) => {
+    const {ALL, ACTIVE, COMPLETED} = filters
 
     switch (filter) {
       case ALL:
@@ -89,42 +81,38 @@ class App extends Component {
       default:
         return data;
     }
-  };
-
-  onFilterData = (filter) => {
-    this.setState({ filter });
-  };
-
-  render() {
-    const { data, filter } = this.state;
-
-    const activeTasks = data.filter((item) => item.completed === false).length;
-    const filttredData = this.updateData(data, filter);
-
-    return (
-      <section className="todoapp">
-        <header className="todoapp__header">
-          <h1 className="todoapp__title">todos</h1>
-          <NewTaskForm onItemAdd={this.onAddItem} />
-        </header>
-        <section className="todoapp__main">
-          <TaskList
-            data={filttredData}
-            onDeleteTasck={this.onDeleteItem}
-            onEditItem={this.onEditItem}
-            onTaskDone={this.onTaskDone}
-            onTimer={this.onTimer}
-          />
-          <Footer
-            activeTasks={activeTasks}
-            onCleareCompleted={this.onCleareCompleted}
-            onFilterData={this.onFilterData}
-            filter={filter}
-          />
-        </section>
-      </section>
-    );
   }
+
+  const onFilterData = (filter) => {
+    setFilter(filter)
+  }
+
+  const activeTasks = data.filter((item) => item.completed === false).length;
+  const filttredData = updateData(data, filter);
+
+  return (
+    <section className="todoapp">
+      <header className="todoapp__header">
+        <h1 className="todoapp__title">todos</h1>
+        <NewTaskForm onItemAdd={onAddItem} />
+      </header>
+      <section className="todoapp__main">
+        <TaskList
+          data={filttredData}
+          onDeleteTasck={onDeleteItem}
+          onEditItem={onEditItem}
+          onTaskDone={onTaskDone}
+          onTimer={onTimer}
+        />
+        <Footer
+          activeTasks={activeTasks}
+          onCleareCompleted={onCleareCompleted}
+          onFilterData={onFilterData}
+          filter={filter}
+        />
+      </section>
+    </section>
+  )
 }
 
 export default App;
